@@ -1,0 +1,8 @@
+jdbcspy.vendor.AmazonProxyDriver
+jdbcspy.vendor.DerbyProxyDriver
+jdbcspy.vendor.MariaProxyDriver
+jdbcspy.vendor.MssqlProxyDriver
+jdbcspy.vendor.MysqlProxyDriver
+jdbcspy.vendor.OracleProxyDriver
+jdbcspy.vendor.PostgreSqlProxyDriver
+jdbcspy.vendor.RedshiftProxyDriver

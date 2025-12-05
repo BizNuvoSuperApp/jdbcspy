@@ -1,0 +1,63 @@
+package jdbcspy.proxy.listener;
+
+/**
+ * The ResourceEvent class.
+ */
+public class ResourceEvent {
+
+    /**
+     * the event source
+     */
+    private final Exception mCause;
+
+    /**
+     * the resource
+     */
+    private final String mOpenMethod;
+
+    /**
+     * the proxy object
+     */
+    private final String mMethod;
+
+    /**
+     * Constructor.
+     *
+     * @param cause      the cause
+     * @param openMethod the open method
+     * @param method     the method
+     */
+    public ResourceEvent(final Exception cause, final String openMethod, final String method) {
+        mCause = cause;
+        mOpenMethod = openMethod;
+        mMethod = method;
+    }
+
+    /**
+     * Get the source event.
+     *
+     * @return Object
+     */
+    public Exception getCause() {
+        return mCause;
+    }
+
+    /**
+     * Get the open method.
+     *
+     * @return String
+     */
+    public String getOpenMethod() {
+        return mOpenMethod;
+    }
+
+    /**
+     * Get the method.
+     *
+     * @return methodObject
+     */
+    public String getMethod() {
+        return mMethod;
+    }
+
+}

@@ -1,0 +1,60 @@
+<dbproxy>
+    <property name="Amazon_DriverClass" value="software.amazon.jdbc.Driver"/>
+    <property name="AmazonOracle_DriverClass" value="com.amazonaws.secretsmanager.sql.AWSSecretsManagerOracleDriver"/>
+    <property name="Derby_DriverClass" value="org.apache.derby.jdbc.EmbeddedDriver"/>
+    <property name="Maria_DriverClass" value="org.mariadb.jdbc.Driver"/>
+    <property name="Mssql_DriverClass" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>the fu
+    <property name="Mysql_DriverClass" value="com.mysql.cj.jdbc.Driver"/>
+    <property name="Oracle_DriverClass" value="oracle.jdbc.OracleDriver"/>
+    <property name="PostgreSql_DriverClass" value="org.postgresql.Driver"/>
+    <property name="Redshift_DriverClass" value="com.amazon.redshift.jdbc.Driver"/>
+
+    <property name="EnableProxyInitially" value="true"/>
+
+    <property name="ResultSetNextTimeThreshold" value="120000"/>
+    <property name="ResultSetTotalTimeThreshold" value="300000"/>
+    <property name="ResultSetTotalSizeThreshold" value="20000000"/>
+
+    <property name="StmtExecuteTimeThreshold" value="5000"/>
+    <property name="StmtTotalTimeThreshold" value="10000"/>
+    <property name="StmtTotalSizeThreshold" value="1000000"/>
+
+    <property name="ConnTotalTimeThreshold" value="0"/>
+    <property name="ConnTotalSizeThreshold" value="10000000"/>
+
+    <property name="DisplaySqlStringMaxlen" value="0"/>
+
+    <property name="RemoveHints" value="false"/>
+    <property name="IgnoreNotClosedObjects" value="true"/>
+    <property name="EnableSizeEvaluation" value="false"/>
+
+    <property name="StmtDebugClassExp" value=""/>
+    <property name="StmtHistorizeClassExp" value=""/>
+    <property name="StmtDebugSQLExp" value=""/>
+    <property name="StmtHistorizeSQLExp" value=""/>
+
+    <property name="TraceDepth" value="3"/>
+    <property name="TraceClassIgnoreRegExp" value="(org\.jboss|org\.jbpm|org\.junit|org\.hibernate|org\.springframework|com\.ibm|com\.sun|jdk\.internal|java|sun)\..*"/>
+
+    <property name="DumpAfterShutdown" value="false"/>
+    <property name="DumpInterval" value="0"/>
+
+    <property name="Verbose" value="false"/>
+
+    <property name="MonitorResultSetTimeThreshold" value="600000"/>
+    <property name="MonitorResultSetFrequency" value="1800000"/>
+
+    <!-- listeners>
+        <executionlistener class="jdbcspy.proxy.listener.impl.ExecutionTimeListener">
+            <property name="longExecutionThreshold" value="180"/>
+        </executionlistener>
+        <executionlistener class="jdbcspy.proxy.listener.impl.ExecutionLastStatementListener">
+            <property name="lastStatementMaxHistory" value="3"/>
+            <property name="lastStatementExecutionThreshold" value="500"/>
+        </executionlistener>
+        <executionlistener class="jdbcspy.proxy.listener.impl.ExecutionStatisticListener"/>
+        <executionlistener class="jdbcspy.proxy.listener.impl.SpecialStatementListener"/>
+
+        <connectionlistener class="jdbcspy.proxy.listener.impl.ConnectionStatisticListener"/>
+    </listeners -->
+</dbproxy>

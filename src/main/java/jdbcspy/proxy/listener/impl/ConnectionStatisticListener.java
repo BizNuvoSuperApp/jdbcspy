@@ -1,0 +1,137 @@
+package jdbcspy.proxy.listener.impl;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
+import javax.sql.XAConnection;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import jdbcspy.proxy.ConnectionStatistics;
+import jdbcspy.proxy.handler.ConnectionInvocationHandler;
+import jdbcspy.proxy.listener.ConnectionEvent;
+import jdbcspy.proxy.listener.ConnectionListener;
+import jdbcspy.proxy.util.Utils;
+
+/**
+ * The ConnectionStatisticListener.
+ */
+public class ConnectionStatisticListener implements ConnectionListener {
+
+    /**
+     * the logger object for tracing
+     */
+    private static final Logger mTrace = LogManager.getLogger(ConnectionStatisticListener.class.getName());
+
+    /**
+     * the connections
+     */
+    private final Set<ConnectionStatistics> mConns = new HashSet<>();
+
+    /**
+     * the count
+     */
+    private int mCount;
+
+    /**
+     * the max current count
+     */
+    private int mMaxCurrentCount;
+
+    /**
+     * the max stmt count
+     */
+    private int mMaxStmtCount;
+
+    /**
+     * @see ConnectionListener#openConnection
+     */
+    @Override
+    public void openConnection(final ConnectionEvent event) {
+        mCount++;
+        synchronized (mConns) {
+            mConns.add(event.getConnectionStatistics());
+            if (mConns.size() > mMaxCurrentCount) {
+                mMaxCurrentCount = mConns.size();
+            }
+        }
+    }
+
+    /**
+     * @see ConnectionListener#openConnection
+     */
+    @Override
+    public void closeConnection(final ConnectionEvent event) {
+        if (event.getConnectionStatistics().getItemCount() > mMaxStmtCount) {
+            mMaxStmtCount = event.getConnectionStatistics().getItemCount();
+        }
+
+        synchronized (mConns) {
+            mConns.remove(event.getConnectionStatistics());
+        }
+    }
+
+    /**
+     * @see ConnectionListener#clearStatistics
+     */
+    @Override
+    public void clearStatistics() {
+        synchronized (mConns) {
+            mConns.clear();
+        }
+        mCount = 0;
+        mMaxCurrentCount = 0;
+        mMaxStmtCount = 0;
+    }
+
+    /**
+     * @see java.lang.Object#toString
+     */
+    @Override
+    public String toString() {
+        final StringBuilder strb = new StringBuilder(
+                "[ConnectionStatisticListener[\n" + "  #conn=" + mCount + "; #max open conns=" + mMaxCurrentCount + "; #max stmts/conn=" + mMaxStmtCount);
+
+        int i = 0;
+        synchronized (mConns) {
+            for (final Iterator<ConnectionStatistics> it = mConns.iterator(); it.hasNext(); i++) {
+                final ConnectionInvocationHandler hndlr = (ConnectionInvocationHandler) it.next();
+                final Object c = hndlr.getUnderlyingConnection();
+
+                if (i == 1) {
+                    strb.append("; current:");
+                }
+                strb.append("\n  ").append(i).append(": ");
+                strb.append(hndlr);
+
+                try {
+                    if (c instanceof Connection && ((Connection) c).getAutoCommit() || c instanceof XAConnection && ((XAConnection) c).getConnection()
+                            .getAutoCommit()) {
+                        strb.append("; autocommit");
+                    }
+                    strb.append("; isolation=").append(Utils.getIsolationLevel((c instanceof Connection
+                            ? ((Connection) c).getTransactionIsolation()
+                            : ((XAConnection) c).getConnection().getTransactionIsolation())));
+                    if (c instanceof Connection && ((Connection) c).isReadOnly() || c instanceof XAConnection && ((XAConnection) c).getConnection()
+                            .isReadOnly()) {
+                        strb.append("; readonly");
+                    }
+                }
+                catch (final SQLException e) {
+                    strb.append("; no connection properties");
+                    mTrace.info("property reading failed, but ignored", e);
+                    it.remove();
+                }
+            }
+            strb.append("\n");
+        }
+        strb.append("]]");
+
+        return strb.toString();
+    }
+
+}
