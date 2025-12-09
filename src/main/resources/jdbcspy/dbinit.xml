@@ -43,6 +43,7 @@
 
     <property name="MonitorResultSetTimeThreshold" value="600000"/>
     <property name="MonitorResultSetFrequency" value="1800000"/>
+    <property name="MonitorResultSetLeakLogAlways" value="false"/>
 
     <!-- listeners>
         <executionlistener class="jdbcspy.proxy.listener.impl.ExecutionTimeListener">

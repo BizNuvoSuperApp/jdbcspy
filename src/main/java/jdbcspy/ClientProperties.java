@@ -525,6 +525,7 @@ public final class ClientProperties {
 
         DB_MONITOR_RESULTSET_TIME_THRESHOLD("MonitorResultSetTimeThreshold", Long.class),
         DB_MONITOR_RESULTSET_FREQUENCY("MonitorResultSetFrequency", Long.class),
+        DB_MONITOR_RESULTSET_LEAK_LOG_ALWAYS("MonitorResultSetLeakLogAlways", Boolean.class),
 
         /**
          * dump interval in s

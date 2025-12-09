@@ -34,7 +34,7 @@ public final class ResultSetMonitor {
                 }
         );
         final var checkFrequency = ClientProperties.Field.DB_MONITOR_RESULTSET_FREQUENCY.getLongValue();
-        scheduler.scheduleWithFixedDelay(new MonitorRunnable(), checkFrequency, checkFrequency, TimeUnit.MILLISECONDS);
+        scheduler.scheduleWithFixedDelay(new MonitorRunnable(resultSetTimers), checkFrequency, checkFrequency, TimeUnit.MILLISECONDS);
     }
 
     private ResultSetMonitor() {
@@ -104,10 +104,14 @@ public final class ResultSetMonitor {
 
     private static class MonitorRunnable implements Runnable {
 
+        private final Set<ResultSetTimer> resultSetTimers;
         private final long timeThresholdValue;
+        private final boolean logLeaks;
 
-        MonitorRunnable() {
-            timeThresholdValue = ClientProperties.Field.DB_MONITOR_RESULTSET_TIME_THRESHOLD.getLongValue();
+        MonitorRunnable(final Set<ResultSetTimer> resultSetTimers) {
+            this.resultSetTimers = resultSetTimers;
+            this.timeThresholdValue = ClientProperties.Field.DB_MONITOR_RESULTSET_TIME_THRESHOLD.getLongValue();
+            this.logLeaks = ClientProperties.Field.DB_MONITOR_RESULTSET_LEAK_LOG_ALWAYS.getBooleanValue();
         }
 
         @Override
@@ -137,7 +141,10 @@ public final class ResultSetMonitor {
                     mTrace.warn("LEAK: Potential Result Set Leaks [[\n{}]]", logMesg);
                 }
                 else if (mTrace.isTraceEnabled()) {
-                    mTrace.warn("LEAK: Open Result Sets [[\n{}]]", logMesg);
+                    mTrace.trace("LEAK: Open Result Sets [[\n{}]]", logMesg);
+                }
+                else if (logLeaks) {
+                    mTrace.info("LEAK: Open Result Sets [[\n{}]]", logMesg);
                 }
             }
             catch (final ConcurrentModificationException t) {
